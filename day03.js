@@ -9,7 +9,7 @@ const example = `987654321111111
 234234234234278
 818181911112111`;
 
-const data = prepareData(input);
+const data = prepareData(example);
 const maxJoltagesForBatteries = data.map(battery => findMaxJoltagesForBattery(battery)); 
 const sum1 = maxJoltagesForBatteries.reduce((acc, cur) => {
   const joltage = Number(cur.join(''));
@@ -47,6 +47,39 @@ function findMaxJoltagesForBattery(battery) {
   }
   return [first, last]
 }
+
+/** PART 2 */
+const LENGTH = 12; 
+function getMonotonicStackOfMinimalLength(bank, minLength) {
+  const arr = bank.split('');
+  const stack = [];
+  for (let i=0; i<arr.length; i++) {
+    const current = arr[i];
+    if (current < stack.at(-1)) {
+      stack.push(current); 
+    } else {
+
+      while (arr.length - i > minLength - stack.length && stack.at(-1) < current) {
+        stack.pop();
+      }
+      stack.push(current);
+    }
+  }
+
+  return stack;
+}
+
+function get12LargestDigits(bank) {
+  return getMonotonicStackOfMinimalLength(bank, LENGTH).slice(0, 12);
+}
+
+function getBiggestNumber(bank) {
+  return Number(get12LargestDigits(bank).join(''));
+}
+
+const results = data.map(bank => getBiggestNumber(bank));
+const sum2 = results.reduce((acc, cur) => acc + cur, 0);
+console.log('sum2', sum2);
 
 /** PREPARING DATA */
 function prepareData(data) {
