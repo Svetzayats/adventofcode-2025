@@ -67,8 +67,43 @@ const resultingLine = handleLines(data.numbers, data.operations);
 const res = resultingLine.reduce((acc, curr) => acc + curr, 0)
 console.log('res', res);
 
+/** PART 2 */
 
+const lines = input.split('\n'); 
 
+function getSum(lines) {
+  const indexOperationLine = lines.length - 1; 
+  const res = [];
+  let numbersForThisCol = [];
+  const lineLength = lines[0].length;
+
+  for (let i = lineLength - 1; i >=0; i--) {
+    let str = '';
+    for (let j = 0; j < indexOperationLine; j++) {
+      str += lines[j][i].trim();
+    }
+    if (!str) {
+      // empty string; separator 
+      numbersForThisCol = [];
+      continue;
+    }
+
+    numbersForThisCol.push(str);
+    str = '';
+    const operation = lines[indexOperationLine][i].trim()
+    if (!operation) continue;
+    const resForThisColumn = numbersForThisCol.reduce((acc, curr) => {
+      const operate = getOperation(operation);
+      return operate(acc, Number(curr));
+    }, getDefaultForEmpty(operation)); 
+    numbersForThisCol = [];
+    res.push(resForThisColumn);
+  }
+  return res;
+}
+
+const res2 = getSum(lines).reduce((acc, curr) => acc + curr, 0);
+console.log('res2', res2)
 /** PREPARE DATA */
 function prepareData(data) {
   const lines = data.split('\n'); 
@@ -78,4 +113,6 @@ function prepareData(data) {
     operations,
   }
 }
+
+
 
